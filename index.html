@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>校园信息服务平台</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body> 
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">🏫 校园信息服务平台</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link active" href="index.html">首页</a></li>
+        <li class="nav-item"><a class="nav-link" href="second.html">二手交易</a></li>
+        <li class="nav-item"><a class="nav-link" href="activity.html">校园活动</a></li>
+        <li class="nav-item"><a class="nav-link" href="lost.html">失物招领</a></li>
+      </ul>
+      <a href="publish.html" class="btn btn-light">发布信息</a>
+    </div>
+        <div id="nav-buttons"></div>
+  </div>
+</nav>
+ <main class="container main-content">
+        <!-- 平台入口导航 -->
+        <section class="platform-grid">
+
+            <a href="activity.html" class="platform-card card-activity">
+                <span class="platform-icon">🚀</span>
+                <div class="platform-title">活动中心</div>
+                <div class="platform-desc">校园讲座、社团活动、比赛报名。</div>
+                <span class="platform-btn">查看活动 &rarr;</span>
+            </a>
+            <a href="lost.html" class="platform-card card-lost">
+                <span class="platform-icon">💙</span>
+                <div class="platform-title">失物招领</div>
+                <div class="platform-desc">遗失物品发布与寻找，互帮互助。</div>
+                <span class="platform-btn">寻找失物 &rarr;</span>
+            </a>
+            <a href="second.html" class="platform-card card-second">
+                <span class="platform-icon">🛒</span>
+                <div class="platform-title">二手集市</div>
+                <div class="platform-desc">闲置物品交易，让资源流动起来。</div>
+                <span class="platform-btn">进入集市 &rarr;</span>
+            </a
+        </section>
+
+        <section>
+        <div class="section-title">近期热门活动<a href="activity.html">查看全部 &rarr;</a></div>
+        <div id="activity-list" class="row"> 
+            <!-- 此处内容将由 JS 动态填充 -->
+        </div>
+    </section>
+
+    <!-- 假设这是你的失物招领列表容器，确保 id 一致 -->
+    <section>
+          <div class="section-title">最新失物招领 <a href="lost.html">查看全部 &rarr;</a></div>
+        <div id="lost-list" class="row">
+            <!-- 此处内容将由 JS 动态填充 -->
+        </div>
+    </section>
+
+    <!-- 假设这是你的二手闲置列表容器，确保 id 一致 -->
+    <section>
+        <div class="section-title">最新二手闲置 <a href="second.html">查看全部 &rarr;</a></div>
+        <div id="second-list" class="row">
+            <!-- 此处内容将由 JS 动态填充 -->
+        </div>
+    </section>
+
+    </main>
+
+<footer class="bg-light py-3 text-center">
+  <div class="container">
+    <p>©2026 校园信息服务平台</p>
+  </div>
+</footer>
+ <script>
+        // 页面内容加载完成后，执行首页内容加载函数
+        document.addEventListener('DOMContentLoaded', function() {
+            // 确保 main.js 已经加载
+            if (typeof loadIndexContent === 'function') {
+                loadIndexContent();
+            } else {
+                console.error('loadIndexContent 函数未找到，请检查 main.js 是否正确加载。');
+            }
+        });
+    </script>
+      <script src="./js/auth.js"></script> <!-- 先加载 auth.js -->
+    <script src="./js/main.js"></script> <!-- 再加载 main.js -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

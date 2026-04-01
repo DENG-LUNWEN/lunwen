@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>发布信息</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">校园信息服务平台</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">首页</a></li>
+        <li class="nav-item"><a class="nav-link" href="second.html">二手交易</a></li>
+        <li class="nav-item"><a class="nav-link" href="activity.html">校园活动</a></li>
+        <li class="nav-item"><a class="nav-link" href="lost.html">失物招领</a></li>
+      </ul>
+    </div>
+            <div id="nav-buttons"></div>
+  </div>
+</nav>
+
+<div class="container mt-5 pt-5 mb-5">
+  <h2 class="text-center mb-4">发布信息</h2>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="mb-3">
+        <label>类型</label>
+        <select id="type" class="form-select" onchange="changeType()">
+          <option value="second">二手交易</option>
+          <option value="activity">校园活动</option>
+          <option value="lost">失物招领</option>
+        </select>
+        <div class="mb-3">
+  <label>QQ</label>
+  <input id="qq" class="form-control">
+</div>
+<div class="mb-3">
+  <label>微信</label>
+  <input id="wx" class="form-control">
+</div>
+      </div>
+      <div id="form"></div>
+      <button onclick="submitPublish()" class="btn btn-primary w-100 mt-3">发布</button>
+    </div>
+  </div>
+</div>
+<script src="./js/auth.js"></script>
+<script src="js/main.js"></script>
+<script>
+  // 页面加载时校验登录状态
+  document.addEventListener('DOMContentLoaded', () => {
+    const user = localStorage.getItem('campus_user');
+    if (!user) {
+      alert("请先登录后再发布信息！");
+      openLoginModal(); // 打开登录弹窗
+    }
+  });
+  changeType();
+</script>
+</body>
+</html>
