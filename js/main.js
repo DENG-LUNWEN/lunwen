@@ -1,6 +1,8 @@
 ts-nocheck
 // 下面是你的代码...
 // // 通用工具
+// 在 main.js 顶部添加（如果未全局暴露）
+const getCurrentUser = () => sessionStorage.getItem('currentUser');
 function genId() { return new Date().getTime(); }
 function fmtTime(timestampOrDatetime) {
   // 兼容时间戳和datetime-local字符串
@@ -21,47 +23,63 @@ function fmtTime(timestampOrDatetime) {
   return `${year}-${month}-${day} ${hour}:${minute}`;
 }
 // 替换原有的save函数
+const API_BASE_URL = 'http://localhost:3001'; // 与 auth.js 保持一致
+
+// ✅ 保存发布信息（type = 'second', 'lost', 'activity'）
 async function save(key, data) {
   try {
-    const response = await fetch(`http://localhost:3001/items`, {
+    // 添加必要字段
+    const payload = {
+      ...data,
+      type: key,
+      publisher: getCurrentUser() || 'anonymous',
+      publishedAt: new Date().toISOString(),
+      status: 'active'
+    };
+
+    const response = await fetch(`${API_BASE_URL}/items`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        ...data,
-        type: key
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
-    
+
     if (!response.ok) {
-      throw new Error('保存数据失败');
+      throw new Error('保存失败');
     }
+
+    const result = await response.json();
+    console.log('发布成功，ID:', result.id);
+    return result.id;
   } catch (error) {
-    console.error('保存数据时出错:', error);
+    console.error('保存数据失败:', error);
+    alert('发布失败，请检查网络');
   }
 }
 
-// 替换原有的get函数
+// ✅ 获取某类所有信息
 async function get(key) {
   try {
-    const response = await fetch(`http://localhost:3001/items?type=${key}`);
-    const data = await response.json();
-    return data;
+    const response = await fetch(`${API_BASE_URL}/items?type=${encodeURIComponent(key)}`);
+    if (!response.ok) throw new Error('获取数据失败');
+    const items = await response.json();
+    return items;
   } catch (error) {
-    console.error('获取数据时出错:', error);
+    console.error('获取数据失败:', error);
     return [];
   }
 }
 
-// 替换原有的getOne函数
-async function getOne(key, id) {
+// ✅ 获取单条信息（用于 detail.html）
+async function getOne(id) {
   try {
-    const response = await fetch(`http://localhost:3001/items/${id}?type=${key}`);
-    const data = await response.json();
-    return data;
+    const response = await fetch(`${API_BASE_URL}/items/${id}`);
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      throw new Error('获取详情失败');
+    }
+    return await response.json();
   } catch (error) {
-    console.error('获取数据时出错:', error);
+    console.error('获取单条数据失败:', error);
     return null;
   }
 }
