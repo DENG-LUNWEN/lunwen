@@ -129,7 +129,7 @@ function handleLogin(e) {
     }
 }
 
-const API_BASE_URL = 'http://localhost:3001'; // 开发时用 localhost；上线后改为 https://your-api.railway.app
+const API_BASE_URL = window.API_BASE_URL || 'http://localhost:3001';
 
 // 密码哈希函数（简单模拟，实际建议用 bcrypt.js 前端版或服务端处理）
 function hashPassword(password) {
