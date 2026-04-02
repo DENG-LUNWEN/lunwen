@@ -22,8 +22,9 @@ function fmtTime(timestampOrDatetime) {
   const minute = String(d.getMinutes()).padStart(2, "0");
   return `${year}-${month}-${day} ${hour}:${minute}`;
 }
+
 // 替换原有的save函数
-const API_BASE_URL = 'http://localhost:3001'; // 与 auth.js 保持一致
+const API_BASE_URL = window.API_BASE_URL || 'http://localhost:3001';
 
 // ✅ 保存发布信息（type = 'second', 'lost', 'activity'）
 async function save(key, data) {
