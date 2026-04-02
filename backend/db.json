@@ -1,0 +1,23 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "sha256_hash_of_admin_password",
+      "email": "admin@example.com",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "items": [
+    {
+      "id": 1,
+      "type": "second",
+      "title": "二手书出售",
+      "price": "50",
+      "description": "九成新教材",
+      "publisher": "admin",
+      "publishedAt": "2024-01-01T00:00:00.000Z",
+      "contact": "admin"
+    }
+  ]
+}
