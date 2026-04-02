@@ -20,18 +20,50 @@ function fmtTime(timestampOrDatetime) {
   const minute = String(d.getMinutes()).padStart(2, "0");
   return `${year}-${month}-${day} ${hour}:${minute}`;
 }
-function save(key, data) {
-  let list = get(key);
-  list.unshift(data);
-  localStorage.setItem(key, JSON.stringify(list));
+// 替换原有的save函数
+async function save(key, data) {
+  try {
+    const response = await fetch(`http://localhost:3001/items`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...data,
+        type: key
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('保存数据失败');
+    }
+  } catch (error) {
+    console.error('保存数据时出错:', error);
+  }
 }
-function get(key) {
-  let str = localStorage.getItem(key);
-  return str ? JSON.parse(str) : [];
+
+// 替换原有的get函数
+async function get(key) {
+  try {
+    const response = await fetch(`http://localhost:3001/items?type=${key}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('获取数据时出错:', error);
+    return [];
+  }
 }
-function getOne(key, id) {
-  let list = get(key);
-  return list.find(item => item.id == id);
+
+// 替换原有的getOne函数
+async function getOne(key, id) {
+  try {
+    const response = await fetch(`http://localhost:3001/items/${id}?type=${key}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('获取数据时出错:', error);
+    return null;
+  }
 }
 
 // 发布表单切换
