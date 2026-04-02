@@ -130,16 +130,20 @@ function handleLogin(e) {
 }
 
 // 验证凭据函数
-function validateCredentials(username, password) {
-    // 获取预设的用户数据（在实际应用中，这些应该从服务器获取）
-    const users = JSON.parse(localStorage.getItem('users')) || {};
+async function validateCredentials(username, password) {
+  try {
+    const response = await fetch('http://localhost:3001/users');
+    const users = await response.json();
     
-    // 检查用户是否存在且密码匹配
-    if (users[username] && users[username].password === hashPassword(password)) {
-        return true;
-    }
+    const foundUser = users.find(user => 
+      user.username === username && user.password === hashPassword(password)
+    );
     
+    return !!foundUser;
+  } catch (error) {
+    console.error('验证用户凭据时出错:', error);
     return false;
+  }
 }
 
 // 密码哈希函数（简单示例，生产环境应使用更强的哈希算法）
@@ -154,26 +158,33 @@ function hashPassword(password) {
 }
 
 // 用户注册功能（用于创建账户）
-function registerUser(username, password) {
-    const users = JSON.parse(localStorage.getItem('users')) || {};
-    
-    // 检查用户是否已存在
-    if (users[username]) {
-        alert('用户已存在');
-        return false;
-    }
-    
-    // 创建新用户
-    users[username] = {
+async function registerUser(username, password, email) {
+  try {
+    const response = await fetch('http://localhost:3001/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: username,
         password: hashPassword(password),
+        email: email,
         createdAt: new Date().toISOString()
-    };
+      })
+    });
     
-    // 保存用户数据
-    localStorage.setItem('users', JSON.stringify(users));
-    return true;
+    if (response.ok) {
+      return true;
+    } else {
+      alert('注册失败');
+      return false;
+    }
+  } catch (error) {
+    console.error('注册用户时出错:', error);
+    alert('网络错误');
+    return false;
+  }
 }
-
 // 初始化默认用户（仅用于演示，生产环境不应有默认用户）
 function initializeDefaultUsers() {
     const users = JSON.parse(localStorage.getItem('users')) || {};
