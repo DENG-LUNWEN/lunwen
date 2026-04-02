@@ -129,21 +129,31 @@ function handleLogin(e) {
     }
 }
 
-// 验证凭据函数
+const API_BASE_URL = 'http://localhost:3001'; // 开发时用 localhost；上线后改为 https://your-api.railway.app
+
+// 密码哈希函数（简单模拟，实际建议用 bcrypt.js 前端版或服务端处理）
+function hashPassword(password) {
+  // 使用 SHA-256 简单哈希（仅演示，生产环境应使用 bcrypt）
+  return window.btoa(unescape(encodeURIComponent(password))); // 临时替代，实际用 crypto.subtle
+  // 或：return password; // 开发期先明文（仅内网测试！）
+}
+
+// ✅ 验证用户登录
 async function validateCredentials(username, password) {
   try {
-    const response = await fetch('http://localhost:3001/users');
+    const response = await fetch(`${API_BASE_URL}/users?username=${encodeURIComponent(username)}`);
+    if (!response.ok) throw new Error('网络错误');
     const users = await response.json();
     
-    const foundUser = users.find(user => 
-      user.username === username && user.password === hashPassword(password)
-    );
-    
-    return !!foundUser;
+    if (users.length === 0) return false;
+
+    const user = users[0];
+    // 注意：此处应比较哈希值！开发期可先明文对比
+    const isMatch = user.password === hashPassword(password); // 或直接 user.password === password（测试用）
+    return isMatch;
   } catch (error) {
-    console.error('验证用户凭据时出错:', error);
+    console.error('登录验证失败:', error);
     return false;
-  }
 }
 
 // 密码哈希函数（简单示例，生产环境应使用更强的哈希算法）
@@ -158,32 +168,47 @@ function hashPassword(password) {
 }
 
 // 用户注册功能（用于创建账户）
+// ✅ 注册用户
 async function registerUser(username, password, email) {
   try {
-    const response = await fetch('http://localhost:3001/users', {
+    const hashedPass = hashPassword(password); // 实际应由后端哈希！前端仅传明文
+    const response = await fetch(`${API_BASE_URL}/users`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        username: username,
-        password: hashPassword(password),
-        email: email,
-        createdAt: new Date().toISOString()
+        username,
+        password: hashedPass, // 建议：前端不哈希，交给后端处理（见下方说明）
+        email,
+        createdAt: new Date().toISOString(),
+        role: 'user'
       })
     });
-    
+
     if (response.ok) {
       return true;
     } else {
-      alert('注册失败');
+      const err = await response.json();
+      alert(`注册失败: ${err.message || '未知错误'}`);
       return false;
     }
   } catch (error) {
-    console.error('注册用户时出错:', error);
-    alert('网络错误');
+    console.error('注册失败:', error);
+    alert('网络错误，请重试');
     return false;
   }
+}
+    function loginSuccess(username) {
+  sessionStorage.setItem('currentUser', username);
+}
+
+// ✅ 检查是否已登录
+function isLoggedIn() {
+  return !!sessionStorage.getItem('currentUser');
+}
+
+// ✅ 获取当前用户名
+function getCurrentUser() {
+  return sessionStorage.getItem('currentUser') || null;
 }
 // 初始化默认用户（仅用于演示，生产环境不应有默认用户）
 function initializeDefaultUsers() {
